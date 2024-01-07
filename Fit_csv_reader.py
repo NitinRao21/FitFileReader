@@ -47,11 +47,16 @@ with open(csv_file, 'r') as fit_csv:
   reader = csv.reader(fit_csv)
   seek_value = 0
   value_list = []
-  row_1 = next(fit_csv)
-  seek_value = row_1.index(sys.argv[2])
+  row_1 = next(reader)
+  try:
+      seek_value = row_1.index(data_field)
+  except ValueError:
+      print(f"Data field '{data_field}' not found in the CSV file.")
+      subprocess.run("rm " + csv_file, shell=True)
+      sys.exit(1)
 
   for row in reader:
-    value_list.append(int(row[9]))
+    value_list.append(int(row[seek_value]))
 
 subprocess.run("rm " + csv_file, shell=True)
 cum_value = sum(value_list)
